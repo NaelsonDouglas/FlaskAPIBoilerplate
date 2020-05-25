@@ -1,0 +1,2 @@
+DATABASE_IP = 'localhost'
+DATABASE_PORT = 1337
