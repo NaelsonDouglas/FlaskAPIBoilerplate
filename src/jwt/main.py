@@ -1,5 +1,5 @@
 import os
-os.chdir('/home/ndc/repos/jwt/src')
+os.chdir('/home/ndc/repos/FlaskAPIBoilerplate/src/jwt')
 import pymongo
 import constants
 from User import User
