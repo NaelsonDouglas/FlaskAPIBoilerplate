@@ -8,8 +8,8 @@ from User import User
 myclient = pymongo.MongoClient(constants.DATABASE_IP,constants.DATABASE_PORT)
 db = myclient["usersDB"]
 users = db['users']
-users.insert_one({'username': 'admin', 'password': '123456'})
+users.insert_one({'name': 'admin', 'password': '123456', 'email': 'test@test.com'})
 
-def find_user(username, collection = users):
-        query = collection.find_one({'username': username})
+def find_user(email, collection = users):
+        query = collection.find_one({'email': email})
         return User.User(query)

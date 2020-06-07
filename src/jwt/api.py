@@ -10,27 +10,38 @@ app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = 'super-secret'
 jwt = JWTManager(app)
 
-@app.route('/login', methods=['POST'])
-def login():
+
+
+@app.route('/auth', methods=['POST'])
+def auth():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
 
-    username = request.json.get('username', None)
-    password = request.json.get('password', None)
-    if not username:
-        return jsonify({"msg": "Missing username parameter"}), 400
+    email = request.json.get('email', None)
+    password = request.json.get('password', None)        
     if not password:
         return jsonify({"msg": "Missing password parameter"}), 400
-
-    user = user_repository.find_user(username)
+    user = user_repository.find_user(email)
     if (user is None):
-        return jsonify({"msg": "Login failed. Check your username and password"}), 401
+        return jsonify({"msg": "Login failed. Check your name and password"}), 401
         
     if (str(password) == str(user.password)):
         access_token = create_access_token(identity=user.id)
-        return jsonify(access_token=access_token), 200
-
+        return jsonify(user=user.name, token=access_token), 200 
     return jsonify({"msg": "Check your credentials and try again"}), 401
+
+@app.route('/user', methods=['POST'])
+def create_user():
+    name = request.json.get('name', None)
+    email = request.json.get('name', None)
+    password = request.json.get('password', None)
+    if not name:
+        return jsonify({"msg": "Missing name parameter"}), 400
+    if not password:
+        return jsonify({"msg": "Missing password parameter"}), 400
+    if not email:
+        return jsonify({"msg": "Missing email parameter"}), 400
+    user_repository.users.insert_one({'name': name, 'email': email, 'password': password})
 
 
 @app.route('/protected', methods=['GET'])
