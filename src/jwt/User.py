@@ -20,5 +20,9 @@ class User(object):
                 return str(self)
         
         @staticmethod        
-        def User(dict):                
-                return User(dict['name'],dict['password'],dict['email'],str(dict['_id']))
+        def User(dict):
+                try:
+                        return User(dict['name'],dict['password'],dict['email'],str(dict['_id']))
+                except:
+                        return User(dict['name'],dict['password'],dict['email'])
+                

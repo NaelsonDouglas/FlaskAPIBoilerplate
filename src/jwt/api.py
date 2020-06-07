@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+import pymongo
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
@@ -33,7 +34,7 @@ def auth():
 @app.route('/user', methods=['POST'])
 def create_user():
     name = request.json.get('name', None)
-    email = request.json.get('name', None)
+    email = request.json.get('email', None)
     password = request.json.get('password', None)
     if not name:
         return jsonify({"msg": "Missing name parameter"}), 400
@@ -41,7 +42,11 @@ def create_user():
         return jsonify({"msg": "Missing password parameter"}), 400
     if not email:
         return jsonify({"msg": "Missing email parameter"}), 400
-    user_repository.users.insert_one({'name': name, 'email': email, 'password': password})
+    try:
+        newUser = user_repository.create_user(email,name,password)
+    except pymongo.errors.DuplicateKeyError:
+        return jsonify({"msg": "Email already in use"}), 403
+    return jsonify(newUser), 201
 
 
 @app.route('/protected', methods=['GET'])
